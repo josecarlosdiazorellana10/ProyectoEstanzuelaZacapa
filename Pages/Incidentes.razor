@@ -1,0 +1,83 @@
+﻿@page "/incidentes"
+
+@inject IJSRuntime JSRuntime
+
+<h1>Incidentes</h1>
+
+<div>
+    <!-- Formulario para crear un incidente -->
+    <form @onsubmit="HandleCreateIncident">
+        <!-- Campos de texto para ingresar detalles del incidente -->
+        <input type="text" @bind="descripcion" placeholder="Descripción" required />
+        <input type="text" @bind="direccion" placeholder="Dirección" required />
+        <input type="text" @bind="referenciaDeDireccion" placeholder="Referencia de dirección" required />
+
+        <!-- Botón para obtener la ubicación actual -->
+        <button type="button" @onclick="GetCurrentLocation">Obtener ubicación actual</button>
+
+        <!-- Botón para enviar el formulario -->
+        <button type="submit">Crear incidente</button>
+    </form>
+</div>
+
+@code {
+    private string descripcion = "";
+    private string direccion = "";
+    private string referenciaDeDireccion = "";
+    private double? latitude;
+    private double? longitude;
+
+    // Método para manejar la creación de incidentes
+    private async Task HandleCreateIncident(EventArgs e)
+    {
+        // Evita el comportamiento predeterminado del formulario
+        //e.PreventDefault();
+
+        if (string.IsNullOrWhiteSpace(descripcion) || string.IsNullOrWhiteSpace(direccion) || string.IsNullOrWhiteSpace(referenciaDeDireccion))
+        {
+            await MostrarAlerta("Error", "Por favor, complete todos los campos.");
+            return;
+        }
+
+        if (!latitude.HasValue || !longitude.HasValue)
+        {
+            await MostrarAlerta("Error", "No se pudo acceder a la geolocalización.");
+            return;
+        }
+
+        // Realizar el envío de datos al servidor aquí
+        // Puedes usar HttpClient u otra forma de enviar datos al servidor
+
+        await MostrarAlerta("Éxito", "Incidente creado exitosamente.");
+
+        // Limpia los campos después de crear el incidente
+        descripcion = "";
+        direccion = "";
+        referenciaDeDireccion = "";
+        latitude = null;
+        longitude = null;
+    }
+
+    // Método para obtener la ubicación actual
+    private async Task GetCurrentLocation()
+    {
+        // Obtén la ubicación actual
+        var location = new Location();
+        if (location != null)
+        {
+            latitude = location.Latitude;
+            longitude = location.Longitude;
+        }
+        else
+        {
+            await MostrarAlerta("Error", "No se pudo obtener la ubicación actual.");
+        }
+    }
+
+    // Método para mostrar una alerta
+    private async Task MostrarAlerta(string titulo, string mensaje)
+    {
+        await JSRuntime.InvokeVoidAsync("alert", mensaje);
+    }
+}
+

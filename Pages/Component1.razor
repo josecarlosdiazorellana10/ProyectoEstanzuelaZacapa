@@ -1,0 +1,47 @@
+﻿@page "/camara"
+
+<h3>@error</h3>
+
+
+    <button @onclick="TomarFoto">Tomar Foto</button>
+
+@if (fotoByteArray != null && fotoByteArray.Length > 0)
+{
+    <img src="data:image/jpeg;base64,@Convert.ToBase64String(fotoByteArray)" alt="Foto" />
+}
+else
+{
+    <p>No se ha tomado ninguna foto aún.</p>
+}
+
+
+
+@code {
+    private string error = "";
+    private bool mostrarFoto = false;
+    private byte[] fotoByteArray;
+
+    private async Task TomarFoto()
+    {
+
+
+        try{
+            var photo = await MediaPicker.CapturePhotoAsync();
+            if (photo != null)
+            {
+                using var stream = await photo.OpenReadAsync();
+                using var memoryStream = new MemoryStream();
+                await stream.CopyToAsync(memoryStream);
+                fotoByteArray = memoryStream.ToArray();
+                mostrarFoto = true;
+            }
+
+        }
+        catch(Exception e)
+        {
+            error = e.Message;
+
+        }
+
+    }
+}

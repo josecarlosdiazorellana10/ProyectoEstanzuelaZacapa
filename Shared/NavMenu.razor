@@ -1,16 +1,18 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@inject NavigationManager NavigationManager
+
+<div class="top-row navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">ProyectoEstanzuelaZacapa</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+        <button title="Navigation menu" class="navbar-toggler order-0" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
+        <a class="navbar-brand text-center mx-auto" href="">@currentPageName</a>
     </div>
 </div>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+<div class="@NavMenuCssClass" menu nav-scrollable>
     <nav class="flex-column">
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            <NavLink  class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </div>
@@ -20,15 +22,36 @@
             </NavLink>
         </div>
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
+            <NavLink  class="nav-link" href="fetchdata">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
             </NavLink>
         </div>
+        <div class="nav-item px-3">
+            <NavLink  class="nav-link" href="incidentes">
+                <span class="bi bi-exclamation-circle-fill" aria-hidden="true"></span> Incidentes
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="camara">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
+            </NavLink>
+        </div>
+
+
     </nav>
 </div>
 
+
+
+
 @code {
     private bool collapseNavMenu = true;
+   
+    private string currentPageName = "Home"; // Inicializar el nombre de la página como "Home"
+
+
+
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
@@ -36,4 +59,55 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        // Asigna el nombre de la página inicial
+        currentPageName = GetPageName();
+
+        // Suscribe al evento LocationChanged para detectar cambios en la URL
+        NavigationManager.LocationChanged += HandleLocationChanged;
+    }
+
+    private void HandleLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        // Actualiza el nombre de la página cuando cambia la ubicación
+        currentPageName = GetPageName();
+
+        // Vuelve a renderizar el componente para reflejar el cambio
+        StateHasChanged();
+    }
+
+  
+
+    private string GetPageName()
+    {
+        // Obtiene la URL actual
+        var currentUrl = NavigationManager.Uri;
+
+        // Obtiene el segmento correspondiente al nombre de la página
+        string pageName = currentUrl.Substring(currentUrl.LastIndexOf('/') + 1);
+
+        if(pageName.Length == 0)
+        {
+
+            return "Home";
+
+        }
+
+        return pageName;
+    }
+
+    public void Dispose()
+    {
+        // Desuscribe el evento LocationChanged al destruir el componente
+        NavigationManager.LocationChanged -= HandleLocationChanged;
+    }
+
+
+
+
 }
