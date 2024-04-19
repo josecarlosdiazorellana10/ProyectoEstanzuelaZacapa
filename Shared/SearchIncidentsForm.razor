@@ -1,0 +1,65 @@
+﻿@using ProyectoEstanzuelaZacapa
+@using System.ComponentModel.DataAnnotations
+@inject IJSRuntime JSRuntime
+
+<!-- Combo box para seleccionar el tipo de búsqueda -->
+<div class="mb-3">
+    <label for="tipoBusqueda">Tipo de búsqueda:</label>
+    <select id="tipoBusqueda" class="form-select">
+        <option value="">Seleccione el tipo de búsqueda</option>
+        <option value="usuario">Búsqueda por usuario</option>
+        <option value="fecha">Búsqueda por fecha</option>
+    </select>
+</div>
+
+<!-- Campos según el tipo de búsqueda seleccionado -->
+@if (formModel.TipoBusqueda == "usuario")
+{
+    <div class="mb-3">
+        <label for="usuarioId">ID de usuario:</label>
+        <InputText id="usuarioId" @bind="formModel.UsuarioId" class="form-control" />
+    </div>
+}
+else if (formModel.TipoBusqueda == "fecha")
+{
+    <div class="mb-3">
+        <label for="fechaInicio">Fecha inicio:</label>
+        <InputDate id="fechaInicio" @bind="formModel.FechaInicio" class="form-control" TValue="DateTime" />
+
+        <label for="fechaFinal">Fecha final:</label>
+        <InputDate id="fechaFinal" @bind="formModel.FechaFinal" class="form-control" TValue="DateTime" />
+    </div>
+}
+
+<!-- Botón para realizar la búsqueda -->
+<div class="mt-2">
+    <button type="submit" class="btn btn-primary">Buscar</button>
+</div>
+
+@code {
+    // Modelo de formulario
+    private FormModel formModel = new FormModel();
+
+    // Método para manejar el envío del formulario
+    private async Task HandleSubmit()
+    {
+        // Implementa la lógica para realizar la búsqueda de incidentes
+        // según el tipo de búsqueda seleccionado.
+    }
+
+    // Definición del modelo de formulario
+    public class FormModel
+    {
+        [Required(ErrorMessage = "El tipo de búsqueda es obligatorio")]
+        public string TipoBusqueda { get; set; }
+
+        // Campo para búsqueda por usuario
+        public string UsuarioId { get; set; }
+
+        // Campos para búsqueda por fecha
+        public DateTime FechaInicio { get; set; }
+        public DateTime FechaFinal { get; set; }
+    }
+}
+
+

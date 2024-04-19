@@ -1,0 +1,60 @@
+﻿@using ProyectoEstanzuelaZacapa
+@using System.ComponentModel.DataAnnotations
+@inject IJSRuntime JSRuntime
+
+<div class="container mt-4">
+    <EditForm Model="@formModel" OnValidSubmit="HandleSubmit">
+        <div class="form-group">
+            <!-- Campo de texto para la descripción -->
+            <InputText id="descripcion" @bind-Value="formModel.Descripcion" class="form-control mb-3" placeholder="Descripción del incidente" />
+        </div>
+
+        <div class="form-group">
+            <!-- Campo de texto para la referencia de dirección -->
+            <InputText id="referenciaDireccion" @bind-Value="formModel.ReferenciaDireccion" class="form-control mb-3" placeholder="Referencia de dirección" />
+        </div>
+
+        <!-- Botones para obtener ubicación, subir imágenes y crear el incidente -->
+        <div class="form-group mt-4">
+            <button type="button" class="btn btn-primary w-100 mb-2" @onclick="ObtenerUbicacion">Obtener ubicación</button>
+            <button type="button" class="btn btn-secondary w-100 mb-2" @onclick="SubirImagenes">Subir imágenes</button>
+            <button type="submit" class="btn btn-success w-100">Crear incidente</button>
+        </div>
+
+        <!-- Añadir validaciones de formulario -->
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+    </EditForm>
+</div>
+
+@code {
+    // Modelo de formulario
+    private FormModel formModel = new FormModel();
+
+    // Métodos para los botones
+    private async Task ObtenerUbicacion()
+    {
+        // Lógica para obtener la ubicación
+    }
+
+    private async Task SubirImagenes()
+    {
+        // Lógica para subir imágenes
+    }
+
+    private async Task HandleSubmit()
+    {
+        // Lógica para crear el incidente
+    }
+
+    // Modelo del formulario
+    public class FormModel
+    {
+        // Añade validaciones con atributos de DataAnnotations
+        [Required(ErrorMessage = "La descripción es obligatoria")]
+        public string Descripcion { get; set; }
+
+        [Required(ErrorMessage = "La referencia de dirección es obligatoria")]
+        public string ReferenciaDireccion { get; set; }
+    }
+}
